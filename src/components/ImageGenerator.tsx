@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Github } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const ImageGenerator = () => {
@@ -74,7 +73,6 @@ const ImageGenerator = () => {
     }
   };
 
-  // Load API key from localStorage on component mount
   React.useEffect(() => {
     const savedApiKey = localStorage.getItem('runwareApiKey');
     if (savedApiKey) {
@@ -89,6 +87,18 @@ const ImageGenerator = () => {
           <h1 className="text-4xl font-bold text-gray-900">Text to Image Generator</h1>
           <p className="text-gray-600">Transform your imagination into reality</p>
         </div>
+
+        {/* Instructions Card */}
+        <Card className="p-6">
+          <h2 className="text-xl font-medium mb-4">How to Use</h2>
+          <ol className="space-y-3 list-decimal pl-4">
+            <li>Visit <a href="https://runware.ai" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Runware.ai</a> and create an account</li>
+            <li>Get your API key from the Runware dashboard</li>
+            <li>Click "Show API Key" above and enter your API key</li>
+            <li>Enter your prompt describing the image you want to generate</li>
+            <li>Click "Generate" and watch your imagination come to life!</li>
+          </ol>
+        </Card>
 
         <Card className="p-6">
           <div className="flex flex-col space-y-4">
@@ -150,6 +160,24 @@ const ImageGenerator = () => {
             )}
           </div>
         </Card>
+
+        {/* Footer */}
+        <footer className="text-center py-6">
+          <div className="flex items-center justify-center gap-4">
+            <a
+              href="https://github.com/Imranimmu-max"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            >
+              <Github className="w-5 h-5" />
+              <span>GitHub Profile</span>
+            </a>
+          </div>
+          <p className="mt-4 text-sm text-gray-500">
+            Powered by Runware.ai
+          </p>
+        </footer>
       </div>
     </div>
   );
