@@ -4,11 +4,8 @@
 
 There are several ways of editing your application.
 
-**Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1f3860cb-1b36-4f75-b536-65b09c975794) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+#copy this repo and paste it on your vs code or any code editor ## 
 
 **Use your preferred IDE**
 
