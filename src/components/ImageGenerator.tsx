@@ -5,15 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
 
   const generateImage = async () => {
     if (!prompt.trim()) {
       toast.error('Please enter a prompt first');
+      return;
+    }
+
+    if (!apiKey.trim()) {
+      toast.error('Please enter your Runware API key');
       return;
     }
 
@@ -24,32 +32,55 @@ const ImageGenerator = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify([{
-          taskType: "imageInference",
-          taskUUID: crypto.randomUUID(),
-          positivePrompt: prompt,
-          model: "runware:100@1",
-          width: 1024,
-          height: 1024,
-          numberResults: 1,
-          outputFormat: "WEBP",
-        }]),
+        body: JSON.stringify([
+          {
+            taskType: "authentication",
+            apiKey: apiKey
+          },
+          {
+            taskType: "imageInference",
+            taskUUID: crypto.randomUUID(),
+            positivePrompt: prompt,
+            model: "runware:100@1",
+            width: 1024,
+            height: 1024,
+            numberResults: 1,
+            outputFormat: "WEBP",
+          }
+        ]),
       });
 
       const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
+      
+      if (data.errors) {
+        throw new Error(data.errors[0].message || 'Failed to generate image');
       }
 
-      setImage(data.data[0].imageURL);
-      toast.success('Image generated successfully!');
+      const imageData = data.data.find(item => item.taskType === "imageInference");
+      if (imageData && imageData.imageURL) {
+        setImage(imageData.imageURL);
+        toast.success('Image generated successfully!');
+        
+        // Save API key to localStorage for future use
+        localStorage.setItem('runwareApiKey', apiKey);
+      } else {
+        throw new Error('No image was generated');
+      }
     } catch (error) {
-      toast.error('Failed to generate image. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to generate image. Please try again.');
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Load API key from localStorage on component mount
+  React.useEffect(() => {
+    const savedApiKey = localStorage.getItem('runwareApiKey');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen p-4 bg-gradient-to-b from-purple-50 to-white">
@@ -61,6 +92,32 @@ const ImageGenerator = () => {
 
         <Card className="p-6">
           <div className="flex flex-col space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-medium">Create your image</h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowApiKey(!showApiKey)}
+                size="sm"
+              >
+                {showApiKey ? "Hide API Key" : "Show API Key"}
+              </Button>
+            </div>
+
+            {showApiKey && (
+              <div className="space-y-2">
+                <p className="text-sm text-gray-500">
+                  Get your API key from <a href="https://runware.ai" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Runware.ai</a>
+                </p>
+                <Input
+                  placeholder="Enter your Runware API key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  type="password"
+                  className="font-mono"
+                />
+              </div>
+            )}
+            
             <div className="flex gap-2">
               <Input
                 placeholder="Enter your prompt here..."
@@ -70,7 +127,7 @@ const ImageGenerator = () => {
               />
               <Button
                 onClick={generateImage}
-                disabled={isLoading || !prompt.trim()}
+                disabled={isLoading || !prompt.trim() || !apiKey.trim()}
                 className="w-24"
               >
                 {isLoading ? (
