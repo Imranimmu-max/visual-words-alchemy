@@ -88,18 +88,6 @@ const ImageGenerator = () => {
           <p className="text-gray-600">Transform your imagination into reality</p>
         </div>
 
-        {/* Instructions Card */}
-        <Card className="p-6">
-          <h2 className="text-xl font-medium mb-4">How to Use</h2>
-          <ol className="space-y-3 list-decimal pl-4">
-            <li>Visit <a href="https://runware.ai" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Runware.ai</a> and create an account</li>
-            <li>Get your API key from the Runware dashboard</li>
-            <li>Click "Show API Key" above and enter your API key</li>
-            <li>Enter your prompt describing the image you want to generate</li>
-            <li>Click "Generate" and watch your imagination come to life!</li>
-          </ol>
-        </Card>
-
         <Card className="p-6">
           <div className="flex flex-col space-y-4">
             <div className="flex items-center justify-between">
@@ -161,7 +149,17 @@ const ImageGenerator = () => {
           </div>
         </Card>
 
-        {/* Footer */}
+        <Card className="p-6">
+          <h2 className="text-xl font-medium mb-4">How to Use</h2>
+          <ol className="space-y-3 list-decimal pl-4">
+            <li>Visit <a href="https://runware.ai" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Runware.ai</a> and create an account</li>
+            <li>Get your API key from the Runware dashboard</li>
+            <li>Click "Show API Key" above and enter your API key</li>
+            <li>Enter your prompt describing the image you want to generate</li>
+            <li>Click "Generate" and watch your imagination come to life!</li>
+          </ol>
+        </Card>
+
         <footer className="text-center py-6">
           <div className="flex items-center justify-center gap-4">
             <a
